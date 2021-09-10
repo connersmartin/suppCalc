@@ -31,7 +31,6 @@ class RowInputs extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         let dailyCost = this.calculate();
-        console.log(this.state.supplement + ' costs ' + dailyCost + ' per day');
         //add a new row
         this.addNewRow();
         //total gets added
@@ -57,7 +56,7 @@ class RowInputs extends React.Component {
     }
 
     editRow(row) {
-        //delete the row       
+        //edit the row       
         let rows = this.state.rows;
         rows = rows.filter(r => r.id !== row.id);
         this.setState({
@@ -71,7 +70,7 @@ class RowInputs extends React.Component {
     }
 
     addNewRow() {
-        //do regex to get numbers in a better place validation wise?
+        //TODO regex to get numbers in a better place validation wise?
         let rows = this.state.rows;
         rows.push({
             id: v4(),
@@ -96,7 +95,6 @@ class RowInputs extends React.Component {
         if (rows.length > 0) {
             rows.forEach(r => sum = sum + r.costPerDay)
         }
-        console.log(sum)
         return sum;
     }
 
@@ -143,7 +141,7 @@ class RowInputs extends React.Component {
                                 <td>{parseFloat(r.costPerDay).toFixed(2)}</td>
                                 <td><button className="btn" onClick={() => this.editRow(r)}>edit</button><button type="button" className="btn" aria-label="delete" onClick={() => this.handleDelete(r.id)}>remove</button></td>
                             </tr>
-                        ))}                        
+                        ))}
                     </tbody>
                     <tfoot>
                         <tr>
