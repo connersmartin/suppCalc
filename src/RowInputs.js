@@ -103,23 +103,24 @@ class RowInputs extends React.Component {
             <div>
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
-                        <label for="supplement">Supplement</label>
+                        <label htmlFor="supplement">Supplement</label>
                         <input type="text" className="form-control" name="supplement" id="supplement" placeholder="Enter supplement name" value={this.state.supplement || ''} onChange={this.handleChange} />
                     </div>
                     <div className="form-group">
-                        <label for="cost">Cost</label>
+                        <label htmlFor="cost">Cost</label>
                         <input type="number" className="form-control" name="cost" id="cost" placeholder="Enter cost of supplement" value={this.state.cost || ''} onChange={this.handleChange} />
                     </div>
                     <div className="form-group">
-                        <label for="servings">Servings</label>
+                        <label htmlFor="servings">Servings</label>
                         <input type="number" className="form-control" name="servings" id="servings" placeholder="Enter number of servings" value={this.state.servings || ''} onChange={this.handleChange} />
                     </div>
                     <div className="form-group">
-                        <label for="servingsPerDay">Servings per Day</label>
+                        <label htmlFor="servingsPerDay">Servings per Day</label>
                         <input type="number" className="form-control" name="servingsPerDay" id="servingsPerDay" placeholder="Enter number of servings per day" value={this.state.servingsPerDay || ''} onChange={this.handleChange} />
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
+                {/*Can I move this to its own component? I should be able to, right? and pass the necessary functions to it*/ }
                 <table className="table">
                     <thead>
                         <tr>
