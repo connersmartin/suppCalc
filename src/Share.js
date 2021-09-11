@@ -16,11 +16,11 @@ class Share extends React.Component {
         let shareObj = {};
         shareObj.rows = this.props.rows
         shareObj.uid = v4();
-        this.setState({shareId: shareObj.uid});
         let data = JSON.stringify(shareObj);
         console.log(data);
         let share = document.getElementById('shareId');
-        share.innerText = this.state.shareId;
+        share.innerText = shareObj.uid;
+        this.setState({shareId: shareObj.uid});
     }
 
     render() {
