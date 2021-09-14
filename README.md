@@ -1,8 +1,9 @@
 # Supplement Calculator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). It made it really eaqsy to get started.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). It made it really easy to get started.
 
 This calculates your daily supplement cost.
+You will be able to share your supplement list as well
 
 ## Available Scripts
 

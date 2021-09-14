@@ -28,9 +28,7 @@ class App extends React.Component {
     //this will send to an API
     let data = JSON.stringify(shareObj);
     console.log(data);
-    let share = document.getElementById('shareId');
-    share.innerText = shareObj.uid;
-    this.setState({ shareId: shareObj.uid });
+    this.populateShare(shareObj.uid);
   }
   handleInputChange(target) {
     const value = target.value;
@@ -53,6 +51,13 @@ class App extends React.Component {
       servings: 0,
       servingsPerDay: 0
     });
+
+  }
+
+  populateShare(uid) {
+    let share = document.getElementById('shareId');
+    share.innerText = uid;
+    this.setState({ shareId: uid });
   }
 
   editRow(row) {
@@ -105,6 +110,40 @@ class App extends React.Component {
       rows.forEach(r => sum = sum + r.costPerDay)
     }
     return sum;
+  }
+
+  handleApiResponse(data) {
+    let rows = data.rows.map(r => r = {
+      id: r.id,
+      supplement: r.supplement,
+      cost: r.cost,
+      servings: r.servings,
+      servingsPerDay: r.servingsPerDay,
+      costPerDay: r.costPerDay
+    });
+    this.populateShare(data.id);
+    this.setState({
+      rows: rows,
+      total: this.getSum(rows)
+    });
+  }
+
+  //this should only happen if an ID is provided
+  componentDidMount() {
+    fetch("http://localhost:3001/share/test")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.handleApiResponse(result);
+        },        
+        (error) => {
+          //figure out how to handle error
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
   }
 
   render() {
