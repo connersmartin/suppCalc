@@ -4,7 +4,9 @@ import RowInputs from './RowInputs';
 import Share from './Share';
 import TableDisplay from './TableDisplay';
 import { v4 } from 'uuid';
+import {withRouter} from 'react-router-dom';
 
+require('dotenv').config();
 
 class App extends React.Component {
   constructor(props) {
@@ -25,11 +27,21 @@ class App extends React.Component {
     let shareObj = {};
     shareObj.rows = this.state.rows
     shareObj.uid = v4();
-    //this will send to an API
+    //this will send to an API to create
     let data = JSON.stringify(shareObj);
     console.log(data);
     this.populateShare(shareObj.uid);
   }
+
+  handleShareUpdate() {
+    let shareObj = {};
+    shareObj.rows = this.state.rows
+    shareObj.uid = this.state.shareId
+    //this will send update to an API
+    let data = JSON.stringify(shareObj);
+    console.log(data);    
+  }
+
   handleInputChange(target) {
     const value = target.value;
     const name = target.name;
@@ -130,27 +142,30 @@ class App extends React.Component {
 
   //this should only happen if an ID is provided
   componentDidMount() {
-    fetch("http://localhost:3001/share/test")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.handleApiResponse(result);
-        },        
-        (error) => {
-          //figure out how to handle error
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
+    console.log(this.props.location.pathname);
+    if (this.props.location.pathname !== '/') {
+      fetch(`${process.env.REACT_APP_BASEURL}${this.props.location.pathname}`)
+        .then(res => res.json())
+        .then(
+          (result) => {
+            this.handleApiResponse(result);
+          },
+          (error) => {
+            //figure out how to handle error
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          }
+        )
+    }
   }
 
   render() {
     return (
       <div>
         <div className="App">
-          <h1>Hey, this calculates your daily expenditure on supplements</h1>
+          <h1>Hey, this calculates your daily expenditure on supplements</h1>         
         </div>
         <RowInputs handleInputChange={this.handleInputChange.bind(this)}
           handleFormSubmit={this.handleFormSubmit.bind(this)}
@@ -169,10 +184,12 @@ class App extends React.Component {
         />
         <Share rows={this.state.rows}
           handleShareSubmit={this.handleShareSubmit.bind(this)}
+          handleShareUpdate={this.handleShareUpdate.bind(this)}
+          shareId={this.state.shareId}
         />
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
