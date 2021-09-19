@@ -30,11 +30,11 @@ class Share extends React.Component {
                     <div>
                         <label htmlFor="summaryDescription">Supplement List Description</label>
                         <input type="textarea" className="form-control" name="summaryDescription" id="summaryDescription" placeholder="Anything to say about this list?" value={this.props.summaryDescription || ''} onChange={this.handleChange} />
-                    </div>                    
+                    </div>
                     <div>
-                        <input className="form-check-input" type="checkbox" name='editable' id="editable" value={this.props.editable} checked={this.props.editable} onChange={this.handleChange}/>
-                        <label className ="form-check-label" htmlFor="editable">
-                        Should this list be editable?
+                        <input className="form-check-input" type="checkbox" name='editable' id="editable" value={this.props.editable} checked={this.props.editable} onChange={this.handleChange} />
+                        <label className="form-check-label" htmlFor="editable">
+                            Should this list be editable?
                         </label>
                     </div>
                 </div>
@@ -47,9 +47,11 @@ class Share extends React.Component {
                         <div>
                             <button className="btn btn-primary" onClick={this.props.handleShareUpdate}>Update Shared List</button>
                         </div>
-                        <div>
-                            <button className="btn btn-primary" onClick={this.props.handleShareDelete}>Delete Share</button>
-                        </div>
+                        {this.props.editable && (
+                            <div>
+                                <button className="btn btn-primary" onClick={this.props.handleShareDelete}>Delete Share</button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
