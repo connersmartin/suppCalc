@@ -4,8 +4,9 @@ import RowInputs from './RowInputs';
 import Share from './Share';
 import TableDisplay from './TableDisplay';
 import { v4 } from 'uuid';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
+const axios = require('axios');
 require('dotenv').config();
 
 class App extends React.Component {
@@ -19,31 +20,48 @@ class App extends React.Component {
       costPerDay: 0,
       total: 0,
       rows: [],
-      shareId: ''
+      shareId: '',
+      editable: false,
+      summaryDescription: ''
     }
 
   }
   handleShareSubmit() {
     let shareObj = {};
-    shareObj.rows = this.state.rows
-    shareObj.uid = v4();
+    shareObj.rows = this.state.rows;    
+    shareObj.description = this.state.summaryDescription;
+    shareObj.editable = this.state.editable;
+    shareObj.id = v4();
     //this will send to an API to create
-    let data = JSON.stringify(shareObj);
-    console.log(data);
-    this.populateShare(shareObj.uid);
+    this.makeApi('post', shareObj, '');
+    this.populateShare(shareObj.id);
   }
 
   handleShareUpdate() {
+
     let shareObj = {};
-    shareObj.rows = this.state.rows
-    shareObj.uid = this.state.shareId
+    shareObj.rows = this.state.rows;
+    shareObj.id = this.state.shareId;
+    shareObj.description = this.state.summaryDescription;
+    shareObj.editable = this.state.editable;
+    console.log(shareObj);
     //this will send update to an API
-    let data = JSON.stringify(shareObj);
-    console.log(data);    
+    this.makeApi('put', shareObj, shareObj.id);
+    //handle success    
+    this.populateShare(shareObj.id);
+  }
+
+  handleShareDelete() {
+    let shareObj = {};
+    shareObj.id = this.state.shareId;
+    //this will send update to an API
+    this.makeApi('delete', null, shareObj.id);
+    //handle success
   }
 
   handleInputChange(target) {
-    const value = target.value;
+    console.log(target.type);
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
     this.setState({
       [name]: value
@@ -124,25 +142,58 @@ class App extends React.Component {
     return sum;
   }
 
+  makeApi(method, obj, param) {
+    let data;
+    if (obj !== null) {
+      data = JSON.stringify(obj);
+    }
+    let url = process.env.REACT_APP_BASEURL;
+    if (param !== '') {
+      url = `${url}/${param}`;
+    }
+    var config = {
+      method: method,
+      url: url,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        //console.log(JSON.stringify(response.data));
+        //handle Success
+      })
+      .catch(function (error) {
+        console.log(error);
+        //handle Error
+      });
+  }
+
   handleApiResponse(data) {
-    let rows = data.rows.map(r => r = {
-      id: r.id,
-      supplement: r.supplement,
-      cost: r.cost,
-      servings: r.servings,
-      servingsPerDay: r.servingsPerDay,
-      costPerDay: r.costPerDay
-    });
-    this.populateShare(data.id);
-    this.setState({
-      rows: rows,
-      total: this.getSum(rows)
-    });
+    if (data) {
+      let rows = data.rows.map(r => r = {
+        id: r.id,
+        supplement: r.supplement,
+        cost: r.cost,
+        servings: r.servings,
+        servingsPerDay: r.servingsPerDay,
+        costPerDay: r.costPerDay
+      });
+      this.setState({
+        editable: data.editable,
+        summaryDescription: data.description,
+        rows: rows,
+        total: this.getSum(rows)
+      });
+      this.populateShare(data.id);
+    }
+    //handle no data case
   }
 
   //this should only happen if an ID is provided
   componentDidMount() {
-    console.log(this.props.location.pathname);
     if (this.props.location.pathname !== '/') {
       fetch(`${process.env.REACT_APP_BASEURL}${this.props.location.pathname}`)
         .then(res => res.json())
@@ -165,7 +216,7 @@ class App extends React.Component {
     return (
       <div>
         <div className="App">
-          <h1>Hey, this calculates your daily expenditure on supplements</h1>         
+          <h1>Hey, this calculates your daily expenditure on supplements</h1>
         </div>
         <RowInputs handleInputChange={this.handleInputChange.bind(this)}
           handleFormSubmit={this.handleFormSubmit.bind(this)}
@@ -184,8 +235,12 @@ class App extends React.Component {
         />
         <Share rows={this.state.rows}
           handleShareSubmit={this.handleShareSubmit.bind(this)}
+          handleInputChange={this.handleInputChange.bind(this)}
           handleShareUpdate={this.handleShareUpdate.bind(this)}
+          handleShareDelete={this.handleShareDelete.bind(this)}
           shareId={this.state.shareId}
+          summaryDescription={this.state.summaryDescription}
+          editable={this.state.editable}
         />
       </div>
     );
