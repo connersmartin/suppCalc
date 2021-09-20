@@ -15,7 +15,7 @@ const Routing = () => {
         <Route path="/" component={App} />
         <Route path="/:id" component={App} />        
       </Switch>
-      <Footer />
+      
     </Router>
   )
 }
