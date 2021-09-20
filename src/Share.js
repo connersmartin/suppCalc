@@ -28,28 +28,28 @@ class Share extends React.Component {
             <div>
                 <div>
                     <div>
-                        <label htmlFor="summaryDescription">Supplement List Description</label>
-                        <input type="textarea" className="form-control" name="summaryDescription" id="summaryDescription" placeholder="Anything to say about this list?" value={this.props.summaryDescription || ''} onChange={this.handleChange} />
+                        <label className='m-1' htmlFor="summaryDescription">Supplement List Description</label>
+                        <input type="textarea" className="form-control m-1" name="summaryDescription" id="summaryDescription" placeholder="Anything to say about this list?" value={this.props.summaryDescription || ''} onChange={this.handleChange} />
                     </div>
                     <div>
-                        <input className="form-check-input" type="checkbox" name='editable' id="editable" value={this.props.editable} checked={this.props.editable} onChange={this.handleChange} />
+                        <input className="form-check-input m-1" type="checkbox" name='editable' id="editable" value={this.props.editable} checked={this.props.editable} onChange={this.handleChange} />
                         <label className="form-check-label" htmlFor="editable">
                             Should this list be editable?
                         </label>
                     </div>
                 </div>
-                <div>
-                    {this.props.shareId === '' && (<button className="btn btn-primary" onClick={this.props.handleShareSubmit}>Create Shareable Link</button>)}
-                    <span id="shareId"></span>
+                <div className='btn-toolbar'>
+                    {this.props.shareId === '' && (<button className="btn btn-primary m-1" onClick={this.props.handleShareSubmit}>Create Shareable Link</button>)}
+                    <span className='m-1' id="shareId" onClick={() => {navigator.clipboard.writeText(this.props.shareUrl)}}></span>
                 </div>
                 {this.props.shareId !== '' && (
-                    <div>
+                    <div className='btn-toolbar'>
                         <div>
-                            <button className="btn btn-primary" onClick={this.props.handleShareUpdate}>Update Shared List</button>
+                            <button className="btn btn-warning m-1" onClick={this.props.handleShareUpdate}>Update Shared List</button>
                         </div>
                         {this.props.editable && (
                             <div>
-                                <button className="btn btn-primary" onClick={this.props.handleShareDelete}>Delete Share</button>
+                                <button className="btn btn-danger m-1" onClick={this.props.handleShareDelete}>Delete Share</button>
                             </div>
                         )}
                     </div>

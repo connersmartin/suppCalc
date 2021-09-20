@@ -5,14 +5,36 @@ import Share from './Share';
 import TableDisplay from './TableDisplay';
 import { v4 } from 'uuid';
 import { withRouter } from 'react-router-dom';
+import Info from './Info';
 
 const axios = require('axios');
+
 require('dotenv').config();
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.handleApiResponse = this.handleApiResponse.bind(this);
+    this.makeApi = this.makeApi.bind(this);
+
     this.state = {
+      supplement: '',
+      cost: 0,
+      servings: 0,
+      servingsPerDay: 0,
+      costPerDay: 0,
+      total: 0,
+      rows: [],
+      shareId: '',
+      shareUrl: '',
+      editable: false,
+      summaryDescription: ''
+    }
+
+  }
+
+  handleNewShare() {
+    this.setState({
       supplement: '',
       cost: 0,
       servings: 0,
@@ -23,12 +45,13 @@ class App extends React.Component {
       shareId: '',
       editable: false,
       summaryDescription: ''
-    }
-
+    })
+    this.populateShare('');
   }
+
   handleShareSubmit() {
     let shareObj = {};
-    shareObj.rows = this.state.rows;    
+    shareObj.rows = this.state.rows;
     shareObj.description = this.state.summaryDescription;
     shareObj.editable = this.state.editable;
     shareObj.id = v4();
@@ -38,7 +61,6 @@ class App extends React.Component {
   }
 
   handleShareUpdate() {
-
     let shareObj = {};
     shareObj.rows = this.state.rows;
     shareObj.id = this.state.shareId;
@@ -51,6 +73,11 @@ class App extends React.Component {
     this.populateShare(shareObj.id);
   }
 
+  handleGetShare(){
+    let id = this.state.shareId;
+    this.makeApi('get', null, id);
+  }
+
   handleShareDelete() {
     let shareObj = {};
     shareObj.id = this.state.shareId;
@@ -60,7 +87,6 @@ class App extends React.Component {
   }
 
   handleInputChange(target) {
-    console.log(target.type);
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
     this.setState({
@@ -85,9 +111,15 @@ class App extends React.Component {
   }
 
   populateShare(uid) {
+    let baseUrl;
     let share = document.getElementById('shareId');
-    share.innerText = uid;
-    this.setState({ shareId: uid });
+    if(uid !== '')
+      {
+        baseUrl = window.location.hostname;
+        share.innerText = `${baseUrl}/${uid}`;
+      }
+    this.setState({ shareId: uid,
+    shareUrl: `${baseUrl}/${uid}` });
   }
 
   editRow(row) {
@@ -161,9 +193,13 @@ class App extends React.Component {
     };
 
     axios(config)
-      .then(function (response) {
-        //console.log(JSON.stringify(response.data));
+      .then(result => {
         //handle Success
+        if(method === 'get')
+        {
+          let data = result.data;
+          this.handleApiResponse(data);
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -203,10 +239,10 @@ class App extends React.Component {
           },
           (error) => {
             //figure out how to handle error
-            this.setState({
-              isLoaded: true,
-              error
-            });
+            // this.setState({
+            //   isLoaded: true,
+            //   error
+            // });
           }
         )
     }
@@ -215,9 +251,11 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <div className="App">
-          <h1>Hey, this calculates your daily expenditure on supplements</h1>
-        </div>
+        <Info handleNewShare={this.handleNewShare.bind(this)}
+        handleGetShare={this.handleGetShare.bind(this)} 
+        handleInputChange={this.handleInputChange.bind(this)}
+        shareId={this.state.shareId}
+        />
         <RowInputs handleInputChange={this.handleInputChange.bind(this)}
           handleFormSubmit={this.handleFormSubmit.bind(this)}
           supplement={this.state.supplement}
@@ -226,7 +264,6 @@ class App extends React.Component {
           servingsPerDay={this.state.servingsPerDay}
           costPerDay={this.state.costPerDay}
         />
-
         <TableDisplay
           total={this.state.total}
           rows={this.state.rows}
@@ -239,6 +276,7 @@ class App extends React.Component {
           handleShareUpdate={this.handleShareUpdate.bind(this)}
           handleShareDelete={this.handleShareDelete.bind(this)}
           shareId={this.state.shareId}
+          shareUrl={this.state.shareUrl}
           summaryDescription={this.state.summaryDescription}
           editable={this.state.editable}
         />
