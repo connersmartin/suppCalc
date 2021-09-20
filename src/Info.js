@@ -28,7 +28,7 @@ class Info extends React.Component {
                     <p>Clicking 'Create Shareable Link' will save this information and it can be shared to anyone</p>
                 </div>
                 <div>
-                    <Link to='/'><button className='btn btn-primary m-1' name='newShare' id='newShare' onClick={this.handleNew}>Create a New List</button></Link>
+                    <button className='btn btn-primary m-1' name='newShare' id='newShare' onClick={this.handleNew}>Create a New List</button>
                 </div>
                 <div>
                 <label className='m-1' htmlFor="shareId">Find a list</label>

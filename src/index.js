@@ -11,11 +11,7 @@ const Routing = () => {
   return (
     <Router>
       <Header />
-      <Switch>
-        <Route path="/" component={App} />
-        <Route path="/:id" component={App} />        
-      </Switch>
-      
+      <App />      
     </Router>
   )
 }
