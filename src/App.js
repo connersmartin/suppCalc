@@ -4,8 +4,8 @@ import RowInputs from './RowInputs';
 import Share from './Share';
 import TableDisplay from './TableDisplay';
 import { v4 } from 'uuid';
-import { withRouter } from 'react-router-dom';
 import Info from './Info';
+import Header from './header';
 
 const axios = require('axios');
 
@@ -14,8 +14,6 @@ require('dotenv').config();
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.handleApiResponse = this.handleApiResponse.bind(this);
-    this.makeApi = this.makeApi.bind(this);
 
     this.state = {
       supplement: '',
@@ -66,7 +64,6 @@ class App extends React.Component {
     shareObj.id = this.state.shareId;
     shareObj.description = this.state.summaryDescription;
     shareObj.editable = this.state.editable;
-    console.log(shareObj);
     //this will send update to an API
     this.makeApi('put', shareObj, shareObj.id);
     //handle success    
@@ -228,29 +225,10 @@ class App extends React.Component {
     //handle no data case
   }
 
-  //this should only happen if an ID is provided
-  componentDidMount() {
-    if (this.props.location.pathname !== '/') {
-      fetch(`${process.env.REACT_APP_BASEURL}${this.props.location.pathname}`)
-        .then(res => res.json())
-        .then(
-          (result) => {
-            this.handleApiResponse(result);
-          },
-          (error) => {
-            //figure out how to handle error
-            // this.setState({
-            //   isLoaded: true,
-            //   error
-            // });
-          }
-        )
-    }
-  }
-
   render() {
     return (
       <div>
+        <Header />
         <Info handleNewShare={this.handleNewShare.bind(this)}
         handleGetShare={this.handleGetShare.bind(this)} 
         handleInputChange={this.handleInputChange.bind(this)}
@@ -285,4 +263,4 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App);
+export default App;
