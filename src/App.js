@@ -6,6 +6,7 @@ import TableDisplay from './TableDisplay';
 import { v4 } from 'uuid';
 import Info from './Info';
 import Header from './header';
+import Loading from './Loading';
 
 const axios = require('axios');
 
@@ -26,7 +27,10 @@ class App extends React.Component {
       shareId: '',
       shareUrl: '',
       editable: false,
-      summaryDescription: ''
+      summaryDescription: '',
+      loading: false,
+      error: false,
+      errorMsg: ''
     }
 
   }
@@ -70,7 +74,7 @@ class App extends React.Component {
     this.populateShare(shareObj.id);
   }
 
-  handleGetShare(){
+  handleGetShare() {
     let id = this.state.shareId;
     this.makeApi('get', null, id);
   }
@@ -110,13 +114,11 @@ class App extends React.Component {
   populateShare(uid) {
     let baseUrl;
     let share = document.getElementById('shareId');
-    if(uid !== '')
-      {
-        baseUrl = window.location.hostname;
-        share.innerText = `${baseUrl}/${uid}`;
-      }
-    this.setState({ shareId: uid,
-    shareUrl: `${baseUrl}/${uid}` });
+    if (uid !== '') {
+      baseUrl = window.location.hostname;
+      share.innerText = `${baseUrl}/${uid}`;
+    }
+    this.setState({ shareId: uid });
   }
 
   editRow(row) {
@@ -184,24 +186,33 @@ class App extends React.Component {
       method: method,
       url: url,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': process.env.REACT_APP_ALLOW_URL
       },
       data: data
     };
-
+    this.setState({
+      loading: true
+    });
     axios(config)
       .then(result => {
         //handle Success
-        if(method === 'get')
-        {
+        if (method === 'get') {
           let data = result.data;
           this.handleApiResponse(data);
         }
+        this.setState({
+          loading: false
+        });
       })
       .catch(function (error) {
         console.log(error);
+        this.setState({
+          loading: false
+        });
         //handle Error
       });
+
   }
 
   handleApiResponse(data) {
@@ -230,9 +241,9 @@ class App extends React.Component {
       <div>
         <Header />
         <Info handleNewShare={this.handleNewShare.bind(this)}
-        handleGetShare={this.handleGetShare.bind(this)} 
-        handleInputChange={this.handleInputChange.bind(this)}
-        shareId={this.state.shareId}
+          handleGetShare={this.handleGetShare.bind(this)}
+          handleInputChange={this.handleInputChange.bind(this)}
+          shareId={this.state.shareId}
         />
         <RowInputs handleInputChange={this.handleInputChange.bind(this)}
           handleFormSubmit={this.handleFormSubmit.bind(this)}
@@ -248,7 +259,8 @@ class App extends React.Component {
           editRow={this.editRow.bind(this)}
           handleDelete={this.handleDelete.bind(this)}
         />
-        <Share rows={this.state.rows}
+        {this.state.loading && <Loading />}
+        {!this.state.loading && <Share rows={this.state.rows}
           handleShareSubmit={this.handleShareSubmit.bind(this)}
           handleInputChange={this.handleInputChange.bind(this)}
           handleShareUpdate={this.handleShareUpdate.bind(this)}
@@ -257,7 +269,7 @@ class App extends React.Component {
           shareUrl={this.state.shareUrl}
           summaryDescription={this.state.summaryDescription}
           editable={this.state.editable}
-        />
+        />}
       </div>
     );
   }
