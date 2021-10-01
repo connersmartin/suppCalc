@@ -186,8 +186,7 @@ class App extends React.Component {
       method: method,
       url: url,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': process.env.REACT_APP_ALLOW_URL
+        'Content-Type': 'application/json'
       },
       data: data
     };
