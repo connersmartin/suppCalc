@@ -200,16 +200,16 @@ class App extends React.Component {
           let data = result.data;
           this.handleApiResponse(data);
         }
-        this.setState({
-          loading: false
-        });
+        
       })
       .catch(function (error) {
         console.log(error);
+       
+        //handle Error
+      }).finally(()=>{
         this.setState({
           loading: false
         });
-        //handle Error
       });
 
   }
@@ -252,14 +252,14 @@ class App extends React.Component {
           servingsPerDay={this.state.servingsPerDay}
           costPerDay={this.state.costPerDay}
         />
-        <TableDisplay
+        {!this.state.loading && <TableDisplay
           total={this.state.total}
           rows={this.state.rows}
           editRow={this.editRow.bind(this)}
           handleDelete={this.handleDelete.bind(this)}
-        />
+        />}
         {this.state.loading && <Loading />}
-        {!this.state.loading && <Share rows={this.state.rows}
+        <Share rows={this.state.rows}
           handleShareSubmit={this.handleShareSubmit.bind(this)}
           handleInputChange={this.handleInputChange.bind(this)}
           handleShareUpdate={this.handleShareUpdate.bind(this)}
@@ -268,7 +268,7 @@ class App extends React.Component {
           shareUrl={this.state.shareUrl}
           summaryDescription={this.state.summaryDescription}
           editable={this.state.editable}
-        />}
+        />
       </div>
     );
   }
