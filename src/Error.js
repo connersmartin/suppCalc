@@ -1,8 +1,7 @@
-
-const Error = () => {
+const Error = (props) => {
     return (
         <div className="error">
-            <p>There was an error</p>
+            <p>There was an error: {props.errorMsg}</p>
         </div>
     )
 }

@@ -7,6 +7,7 @@ import { v4 } from 'uuid';
 import Info from './Info';
 import Header from './header';
 import Loading from './Loading';
+import Error from './Error';
 
 const axios = require('axios');
 
@@ -111,6 +112,13 @@ class App extends React.Component {
 
   }
 
+  handleResetError() {
+    this.setState({
+      error: false,
+      errorMsg: ''
+    });
+  }
+
   populateShare(uid) {
     let baseUrl;
     let share = document.getElementById('shareId');
@@ -134,6 +142,7 @@ class App extends React.Component {
       total: this.getSum(rows)
     });
   }
+
   handleDelete(id) {
     //delete the row
     let rows = this.state.rows;
@@ -174,6 +183,7 @@ class App extends React.Component {
   }
 
   makeApi(method, obj, param) {
+    this.handleResetError();
     let data;
     if (obj !== null) {
       data = JSON.stringify(obj);
@@ -202,9 +212,12 @@ class App extends React.Component {
         }
         
       })
-      .catch(function (error) {
-        console.log(error);
-       
+      .catch( (err)=> {
+        console.log(err);
+        this.setState({
+          error: true,
+          errorMsg: err.message
+        });
         //handle Error
       }).finally(()=>{
         this.setState({
@@ -239,6 +252,7 @@ class App extends React.Component {
     return (
       <div>
         <Header />
+        {this.state.error && <Error errorMsg={this.state.errorMsg} handleResetError={this.handleResetError.bind(this)} />}
         <Info handleNewShare={this.handleNewShare.bind(this)}
           handleGetShare={this.handleGetShare.bind(this)}
           handleInputChange={this.handleInputChange.bind(this)}
