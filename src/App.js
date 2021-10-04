@@ -189,10 +189,6 @@ class App extends React.Component {
       data = JSON.stringify(obj);
     }
     let url = process.env.REACT_APP_BASEURL;
-    if(method=='put'){
-      method = 'post';
-      url = `${url}/edit`;
-    }
     if (param !== '') {
       url = `${url}/${param}`;
     }
