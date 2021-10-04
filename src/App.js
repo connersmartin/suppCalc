@@ -244,7 +244,8 @@ class App extends React.Component {
         //handle Error
       }).finally(()=> {
         this.setState({
-          loading: false
+          loading: false,
+          loadShare: true
         });
       });
 
