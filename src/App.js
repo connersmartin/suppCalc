@@ -227,7 +227,7 @@ class App extends React.Component {
       loading: true
     });
     axios(config)
-      .then(result=> {
+      .then(result => {
         //handle Success
         if (method === 'get') {
           let data = result.data;
@@ -242,10 +242,11 @@ class App extends React.Component {
           errorMsg: err.message
         });
         //handle Error
-      }).finally(()=> {
+      }).finally(() => {
         this.setState({
           loading: false,
-          loadShare: true
+          loadShare: true,
+          findShare: false
         });
       });
 
