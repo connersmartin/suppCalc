@@ -189,6 +189,10 @@ class App extends React.Component {
       data = JSON.stringify(obj);
     }
     let url = process.env.REACT_APP_BASEURL;
+    if(method=='put'){
+      method = 'post';
+      url = `${url}/edit`;
+    }
     if (param !== '') {
       url = `${url}/${param}`;
     }
@@ -210,16 +214,16 @@ class App extends React.Component {
           let data = result.data;
           this.handleApiResponse(data);
         }
-        
+
       })
-      .catch( (err)=> {
+      .catch((err) => {
         console.log(err);
         this.setState({
           error: true,
           errorMsg: err.message
         });
         //handle Error
-      }).finally(()=>{
+      }).finally(() => {
         this.setState({
           loading: false
         });
