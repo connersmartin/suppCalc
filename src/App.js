@@ -204,7 +204,7 @@ class App extends React.Component {
       loading: true
     });
     axios(config)
-      .then(result => {
+      .then(function(result) {
         //handle Success
         if (method === 'get') {
           let data = result.data;
@@ -212,14 +212,14 @@ class App extends React.Component {
         }
 
       })
-      .catch((err) => {
+      .catch(function(err) {
         console.log(err);
         this.setState({
           error: true,
           errorMsg: err.message
         });
         //handle Error
-      }).finally(() => {
+      }).finally(function() {
         this.setState({
           loading: false
         });
