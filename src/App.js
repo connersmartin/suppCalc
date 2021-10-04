@@ -27,13 +27,17 @@ class App extends React.Component {
       rows: [],
       shareId: '',
       shareUrl: '',
-      editable: false,
+      editable: true,
       summaryDescription: '',
       loading: false,
       error: false,
-      errorMsg: ''
+      errorMsg: '',
+      newShare: false,
+      loadShare: false,
+      findShare: false
     }
 
+    this.makeApi.bind(this);
   }
 
   handleNewShare() {
@@ -47,7 +51,26 @@ class App extends React.Component {
       rows: [],
       shareId: '',
       editable: false,
-      summaryDescription: ''
+      summaryDescription: '',
+      newShare: true
+    })
+    this.populateShare('');
+  }
+
+  handleFindShare() {
+    this.setState({
+      supplement: '',
+      cost: 0,
+      servings: 0,
+      servingsPerDay: 0,
+      costPerDay: 0,
+      total: 0,
+      rows: [],
+      shareId: '',
+      editable: false,
+      summaryDescription: '',
+      newShare: false,
+      findShare: true
     })
     this.populateShare('');
   }
@@ -204,7 +227,7 @@ class App extends React.Component {
       loading: true
     });
     axios(config)
-      .then(function(result) {
+      .then(result=> {
         //handle Success
         if (method === 'get') {
           let data = result.data;
@@ -212,14 +235,14 @@ class App extends React.Component {
         }
 
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err);
         this.setState({
           error: true,
           errorMsg: err.message
         });
         //handle Error
-      }).finally(function() {
+      }).finally(()=> {
         this.setState({
           loading: false
         });
@@ -253,36 +276,47 @@ class App extends React.Component {
       <div>
         <Header />
         {this.state.error && <Error errorMsg={this.state.errorMsg} handleResetError={this.handleResetError.bind(this)} />}
-        <Info handleNewShare={this.handleNewShare.bind(this)}
+        <Info
+          handleNewShare={this.handleNewShare.bind(this)}
+          handleFindShare={this.handleFindShare.bind(this)}
           handleGetShare={this.handleGetShare.bind(this)}
           handleInputChange={this.handleInputChange.bind(this)}
           shareId={this.state.shareId}
+          newShare={this.state.newShare}
+          loadShare={this.state.loadShare}
+          findShare={this.state.findShare}
         />
-        <RowInputs handleInputChange={this.handleInputChange.bind(this)}
-          handleFormSubmit={this.handleFormSubmit.bind(this)}
-          supplement={this.state.supplement}
-          cost={this.state.cost}
-          servings={this.state.servings}
-          servingsPerDay={this.state.servingsPerDay}
-          costPerDay={this.state.costPerDay}
-        />
-        {!this.state.loading && <TableDisplay
-          total={this.state.total}
-          rows={this.state.rows}
-          editRow={this.editRow.bind(this)}
-          handleDelete={this.handleDelete.bind(this)}
-        />}
-        {this.state.loading && <Loading />}
-        <Share rows={this.state.rows}
-          handleShareSubmit={this.handleShareSubmit.bind(this)}
-          handleInputChange={this.handleInputChange.bind(this)}
-          handleShareUpdate={this.handleShareUpdate.bind(this)}
-          handleShareDelete={this.handleShareDelete.bind(this)}
-          shareId={this.state.shareId}
-          shareUrl={this.state.shareUrl}
-          summaryDescription={this.state.summaryDescription}
-          editable={this.state.editable}
-        />
+        {(this.state.loadShare || this.state.newShare) && <div>
+          <Share
+            rows={this.state.rows}
+            handleShareSubmit={this.handleShareSubmit.bind(this)}
+            handleInputChange={this.handleInputChange.bind(this)}
+            handleShareUpdate={this.handleShareUpdate.bind(this)}
+            handleShareDelete={this.handleShareDelete.bind(this)}
+            shareId={this.state.shareId}
+            shareUrl={this.state.shareUrl}
+            summaryDescription={this.state.summaryDescription}
+            editable={this.state.editable}
+          />
+          {!this.state.loading && <TableDisplay
+            total={this.state.total}
+            rows={this.state.rows}
+            editRow={this.editRow.bind(this)}
+            handleDelete={this.handleDelete.bind(this)}
+          />}
+          {this.state.loading && <Loading />}
+          {(this.state.editable || this.state.newShare) &&
+            <RowInputs handleInputChange={this.handleInputChange.bind(this)}
+              handleFormSubmit={this.handleFormSubmit.bind(this)}
+              supplement={this.state.supplement}
+              cost={this.state.cost}
+              servings={this.state.servings}
+              servingsPerDay={this.state.servingsPerDay}
+              costPerDay={this.state.costPerDay}
+            />
+          }
+        </div>
+        }
       </div>
     );
   }
