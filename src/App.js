@@ -217,7 +217,7 @@ class App extends React.Component {
     if (obj !== null) {
       data = JSON.stringify(obj);
     }
-    let url = process.env.REACT_APP_BASEURL ?? "https://localhost:3001/share";
+    let url = process.env.REACT_APP_BASEURL;
     if (param !== '') {
       url = `${url}/${param}`;
     }
