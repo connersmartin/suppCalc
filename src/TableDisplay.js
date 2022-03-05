@@ -14,10 +14,10 @@ class TableDisplay extends React.Component {
                         <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
+                <tbody id="tableBody"> 
                     {this.props.rows.map((r) => (
                         <tr key={r.id} >
-                            <td>{r.supplement}</td>
+                            <td><a href={r.link} target='_blank' rel='noreferrer noopener'>{r.supplement}</a></td>
                             <td>{r.cost}</td>
                             <td>{r.servings}</td>
                             <td>{r.servingsPerDay}</td>

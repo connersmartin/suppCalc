@@ -35,6 +35,10 @@ class RowInputs extends React.Component {
                         <label className='m-1' htmlFor="servingsPerDay">Servings per Day</label>
                         <input type="number" className="form-control m-1" name="servingsPerDay" id="servingsPerDay" placeholder="Enter number of servings per day" value={this.props.servingsPerDay || ''} onChange={this.handleChange} />
                     </div>
+                    <div className="form-group">
+                        <label className='m-1' htmlFor="link">link to product</label>
+                        <input type="text" className="form-control m-1" name="link" id="link" placeholder="Web Address (optional)" value={this.props.link || ''} onChange={this.handleChange} />
+                    </div>
                     <button type="submit" className="btn btn-primary m-1">Add Row</button>
                 </form>
             </div>

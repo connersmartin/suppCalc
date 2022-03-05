@@ -24,6 +24,7 @@ class App extends React.Component {
       servingsPerDay: 0,
       costPerDay: 0,
       total: 0,
+      link: '',
       rows: [],
       shareId: '',
       shareUrl: '',
@@ -48,6 +49,7 @@ class App extends React.Component {
       servingsPerDay: 0,
       costPerDay: 0,
       total: 0,
+      link: '',
       rows: [],
       shareId: '',
       editable: false,
@@ -65,6 +67,7 @@ class App extends React.Component {
       servingsPerDay: 0,
       costPerDay: 0,
       total: 0,
+      link: '',
       rows: [],
       shareId: '',
       editable: false,
@@ -130,7 +133,8 @@ class App extends React.Component {
       supplement: '',
       cost: 0,
       servings: 0,
-      servingsPerDay: 0
+      servingsPerDay: 0,
+      link: ''
     });
 
   }
@@ -162,7 +166,8 @@ class App extends React.Component {
       servings: row.servings,
       servingsPerDay: row.servingsPerDay,
       rows: rows,
-      total: this.getSum(rows)
+      total: this.getSum(rows),
+      link: row.link
     });
   }
 
@@ -185,7 +190,8 @@ class App extends React.Component {
       cost: this.state.cost,
       servings: this.state.servings,
       servingsPerDay: this.state.servingsPerDay,
-      costPerDay: this.calculate()
+      costPerDay: this.calculate(),
+      link: this.state.link
     })
     this.setState({ rows: rows });
   }
@@ -211,7 +217,7 @@ class App extends React.Component {
     if (obj !== null) {
       data = JSON.stringify(obj);
     }
-    let url = process.env.REACT_APP_BASEURL;
+    let url = process.env.REACT_APP_BASEURL ?? "https://localhost:3001/share";
     if (param !== '') {
       url = `${url}/${param}`;
     }
@@ -260,7 +266,8 @@ class App extends React.Component {
         cost: r.cost,
         servings: r.servings,
         servingsPerDay: r.servingsPerDay,
-        costPerDay: r.costPerDay
+        costPerDay: r.costPerDay,
+        link: r.link
       });
       this.setState({
         editable: data.editable,
@@ -315,6 +322,7 @@ class App extends React.Component {
               servings={this.state.servings}
               servingsPerDay={this.state.servingsPerDay}
               costPerDay={this.state.costPerDay}
+              link={this.state.link}
             />
           }
         </div>
